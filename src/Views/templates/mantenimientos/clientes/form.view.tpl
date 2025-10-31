@@ -2,4 +2,48 @@
     <section class="deplth=2">
         <h2>{{mode}}</h2>
     </section>
+    <form action="index.php?page=Mantenimientos-Cliente&mode={{mode}}&codigo{{codigo}}" method="post">
+        <div>
+        <label for="codigo">Codigo</label>
+        <input type="text" name="codigo" id="codigo" value="{{codigo}}"/>
+        </div>
+        <div>
+        <label for="nombre">Nombre</label>
+        <input type="text" name="nombre" id="nombre" value="{{nombre}}"/>
+        </div>
+        <div>
+        <label for="direccion">Direccion</label>
+        <input type="text" name="direccion" id="direccion" value="{{direccion}}"/>
+        </div>
+        <div>
+        <label for="telefono">Telefono</label>
+        <input type="text" name="telefono" id="telefono" value="{{telefono}}"/>
+        </div>
+        <div>
+        <label for="correo">Correo</label>
+        <input type="text" name="correo" id="correo" value="{{correo}}"/>
+        </div>
+        <div>
+        <label for="estado">Estado</label>
+        <input type="text" name="estado" id="estado" value="{{estado}}"/>
+        </div>
+         <div>
+        <label for="evaluacion">Evaluacion</label>
+        <input type="text" name="evaluacion" id="evaluacion" value="{{evaluacion}}"/>
+        </div>
+
+        <div>
+            <button id="btnCancelar">Cancelar</button>
+            <button id="btnConfirmar" type="submit">Confirmar</button>
+        </div>
+    </form>
 </section>
+<script>
+    ddEventListener("DOMContentLoaded", () => {
+    document.getElementById("btnCancelar").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.assign("index.php?page=Mantenimientos-Clientes");
+    });
+});
+</script>
