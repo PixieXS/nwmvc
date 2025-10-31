@@ -5,6 +5,7 @@ namespace Controllers\Mantenimientos;
 use Controllers\PublicController;
 use Utilities\Site;
 use Dao\Clientes\Clientes as DAOClientes;
+use Utilities\Validators;
 use Views\Renderer;
 use Exception;
 
@@ -13,6 +14,8 @@ const ClientView = "mantenimientos/clientes/form";
 
 class Cliente extends PublicController 
 {
+    private array $errores = []; // Inicializado para evitar Undefined property
+
     private $modes = [
         "INS" => "Nuevo Cliente",
         "UPD" => "Editando %s",
@@ -26,15 +29,35 @@ class Cliente extends PublicController
     private string $direccion = '';
     private string $telefono = '';
     private string $correo = '';
-    private string $estado = 'ACT';
+    private string $estado = '';
     private int $evaluacion = 0;
 
     public function run(): void
     {
         try {
             $this->page_init();
+
+            if($this->isPostBack()) {
+                $this->errores = $this->validarPostData();
+
+                if(count($this->errores) === 0) {
+                    switch($this->mode) {
+                        case "INS":
+                            // Llamar a Dao para insertar
+                            break;
+                        case "UPD":
+                            // Llamar a Dao para actualizar
+                            break;
+                        case "DEL":
+                            // Llamar a Dao para eliminar
+                            break;
+                    }
+                }
+            }
+
             Renderer::render(ClientView, $this->preparar_datos_vista());
-        } catch (Exception $ex)  {
+
+        } catch (Exception $ex) {
             error_log($ex->getMessage());
             Site::redirectToWithMsg(ClientesList, "Sucedió un problema. Reintente nuevamente.");
         }
@@ -49,7 +72,7 @@ class Cliente extends PublicController
 
         $this->mode = $_GET["mode"];
 
-        // Si no es un modo de insertar, necesitamos un código
+        // Si no es modo INS, necesitamos un código
         if ($this->mode !== "INS") {
             if (!isset($_GET["codigo"]) || empty($_GET["codigo"])) {
                 throw new Exception("Código no es válido");
@@ -63,7 +86,7 @@ class Cliente extends PublicController
                 throw new Exception("No se encontró registro");
             }
 
-            // Mapear los datos a las propiedades del controlador
+            // Mapear datos a las propiedades
             $this->codigo = $tmpCliente["codigo"];
             $this->nombre = $tmpCliente["nombre"];
             $this->direccion = $tmpCliente["direccion"];
@@ -74,17 +97,51 @@ class Cliente extends PublicController
         }
     }
 
+    private function validarPostData(): array
+    {
+        $errors = [];
+
+        $this->codigo = $_POST["codigo"] ?? '';
+        $this->nombre = $_POST["nombre"] ?? '';
+        $this->direccion = $_POST["direccion"] ?? '';
+        $this->telefono = $_POST["telefono"] ?? '';
+        $this->correo = $_POST["correo"] ?? '';
+        $this->estado = $_POST["estado"] ?? 'ACT';
+        $this->evaluacion = intval($_POST["evaluacion"] ?? 0);
+
+        // Validaciones básicas
+        if(Validators::IsEmpty($this->nombre)) {
+            $errors[] = "Nombre no puede ir vacío";
+        }
+
+        if(!in_array($this->estado, ["ACT", "INA"])) {
+            $errors[] = "Estado incorrecto";
+        }
+
+        return $errors;
+    }
+
     private function preparar_datos_vista(): array
     {
-        return [
-            "mode" => $this->mode,
-            "codigo" => $this->codigo,
-            "nombre" => $this->nombre,
-            "direccion" => $this->direccion,
-            "telefono" => $this->telefono,
-            "correo" => $this->correo,
-            "estado" => $this->estado,
-            "evaluacion" => $this->evaluacion
-        ];
+        $viewData = [];
+        $viewData["mode"] = $this->mode;
+        $viewData["modeDsc"] = $this->modes[$this->mode];
+
+        if($this->mode !== "INS") {
+            $viewData["modeDsc"] = sprintf($viewData["modeDsc"], $this->nombre);
+        }
+
+        $viewData["codigo"] = $this->codigo;
+        $viewData["nombre"] = $this->nombre;
+        $viewData["direccion"] = $this->direccion;
+        $viewData["telefono"] = $this->telefono;
+        $viewData["correo"] = $this->correo;
+        $viewData["estado"] = $this->estado;
+        $viewData["evaluacion"] = $this->evaluacion;
+
+        $viewData["errores"] = $this->errores;
+        $viewData["hasErrores"] = count($this->errores) > 0;
+
+        return $viewData;
     }
 }

@@ -1,7 +1,14 @@
 <section class="container">
     <section class="deplth=2">
-        <h2>{{mode}}</h2>
+        <h2>{{modeDsc}}</h2>
     </section>
+    {{if hasErrores}}
+    <ul class="error">
+        {{foreach errores}}
+            <li>{{this}}</li>
+        {{endfor errores}}
+    </ul>
+    {{endif hasErrores}}
     <form action="index.php?page=Mantenimientos-Cliente&mode={{mode}}&codigo{{codigo}}" method="post">
         <div>
         <label for="codigo">Codigo</label>
@@ -39,7 +46,7 @@
     </form>
 </section>
 <script>
-    ddEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnCancelar").addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
