@@ -41,16 +41,50 @@ class Cliente extends PublicController
                 $this->errores = $this->validarPostData();
 
                 if(count($this->errores) === 0) {
+                    try {
                     switch($this->mode) {
                         case "INS":
                             // Llamar a Dao para insertar
+                            $affectedRows = DAOClientes::crearCliente(
+                                  $this->codigo,
+                                  $this->nombre,
+                                  $this->direccion,
+                                  $this->correo,
+                                  $this->telefono,
+                                  $this->estado,
+                                  $this->evaluacion
+                             );
+                            if($affectedRows > 0){
+                                Site::redirectToWithMsg(ClientesList, "Nuevo Cliente Creado Satisfactoriamente");
+                            }
                             break;
                         case "UPD":
                             // Llamar a Dao para actualizar
+                             $affectedRows = DAOClientes::actualizarCliente(
+                                  $this->codigo,
+                                  $this->nombre,
+                                  $this->direccion,
+                                  $this->correo,
+                                  $this->telefono,
+                                  $this->estado,
+                                  $this->evaluacion
+                             );
+                            if($affectedRows > 0){
+                                Site::redirectToWithMsg(ClientesList, "Cliente Actualizado Satisfactoriamente");
+                            }
                             break;
                         case "DEL":
                             // Llamar a Dao para eliminar
+                             $affectedRows = DAOClientes::eliminarCliente(
+                                  $this->codigo
+                             );
+                            if($affectedRows > 0){
+                                Site::redirectToWithMsg(ClientesList, "Cliente Eliminado Satisfactoriamente");
+                            }
                             break;
+                        }
+                    } catch (Exception $err){
+                        error_log($err, 0);
                     }
                 }
             }

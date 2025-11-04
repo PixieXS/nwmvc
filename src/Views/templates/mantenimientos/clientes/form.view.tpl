@@ -9,7 +9,7 @@
         {{endfor errores}}
     </ul>
     {{endif hasErrores}}
-    <form action="index.php?page=Mantenimientos-Cliente&mode={{mode}}&codigo{{codigo}}" method="post">
+        <form action="index.php?page=Mantenimientos-Cliente&mode={{mode}}&codigo={{codigo}}" method="post">
         <div>
         <label for="codigo">Codigo</label>
         <input type="text" name="codigo" id="codigo" value="{{codigo}}"/>
