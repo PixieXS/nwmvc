@@ -32,6 +32,8 @@ class Cliente extends PublicController
     private string $estado = '';
     private int $evaluacion = 0;
 
+    private string $validationToken = "";
+
     public function run(): void
     {
         try {
@@ -135,6 +137,13 @@ class Cliente extends PublicController
     {
         $errors = [];
 
+        $this->validationToken = $_POST["vlt"] ?? "";
+
+        if(isset( $_SESSION[$this->name."_token"]) &&  $_SESSION[$this->name."_token"] !== $this->validationToken)
+        {
+            throw new Exception("Error De Validacion De Token");
+        }
+
         $this->codigo = $_POST["codigo"] ?? '';
         $this->nombre = $_POST["nombre"] ?? '';
         $this->direccion = $_POST["direccion"] ?? '';
@@ -155,6 +164,13 @@ class Cliente extends PublicController
         return $errors;
     }
 
+
+    private function generarTokenDeValidacion()
+    {
+        $this->validationToken = md5(gettimeofday(true).$this->name.rand(1000, 9999));
+        $_SESSION[$this->name."_token"] = $this->validationToken;
+    }
+
     private function preparar_datos_vista(): array
     {
         $viewData = [];
@@ -173,9 +189,22 @@ class Cliente extends PublicController
         $viewData["estado"] = $this->estado;
         $viewData["evaluacion"] = $this->evaluacion;
 
+        $this->generarTokenDeValidacion();
+        $viewData["token"]  = $this->validationToken;
+
         $viewData["errores"] = $this->errores;
         $viewData["hasErrores"] = count($this->errores) > 0;
 
+
+        $viewData["codigoReadonly"] = $this->mode !=="INS" ? "readonly":"";
+
+        $viewData["readonly"] = in_array($this->mode, ["DSP","DEL"]) ? "readonly":"";
+
+        $viewData["isDisplay"] = $this->mode === "DSP";
+
+        $viewData["selected"][$this->estado] = "selected";
+        
+        
         return $viewData;
     }
 }
