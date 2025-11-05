@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Formulario de Cliente</title>
-</head>
-<body>
+
 <style>
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -52,16 +51,33 @@ form label {
     font-weight: 600;
 }
 
-form input[type="text"] {
+form input[type="text"],
+form select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #cbd5e0;
     border-radius: 6px;
     font-size: 1rem;
     transition: 0.2s;
+    background-color: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
-form input[type="text"]:focus {
+/* Estilo del select */
+form select {
+    background-image: linear-gradient(45deg, transparent 50%, #555 50%),
+                      linear-gradient(135deg, #555 50%, transparent 50%);
+    background-position: calc(100% - 15px) center, calc(100% - 10px) center;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+form input[type="text"]:focus,
+form select:focus {
     outline: none;
     border-color: #3182ce;
     box-shadow: 0 0 5px rgba(49,130,206,0.3);
@@ -116,6 +132,8 @@ form input[type="text"]:focus {
     }
 }
 </style>
+</head>
+<body>
 
 <section class="container">
   <h2>{{modeDsc}}</h2>
@@ -131,7 +149,7 @@ form input[type="text"]:focus {
   <form action="index.php?page=Mantenimientos-Cliente&mode={{mode}}&codigo={{codigo}}" method="post">
     <div>
       <label for="codigo">Código</label>
-      <input type="text" name="codigo" id="codigo" value="{{codigo}}" {{codigoReadonly}}/ >
+      <input type="text" name="codigo" id="codigo" value="{{codigo}}" {{codigoReadonly}} />
       <input type="hidden" name="vlt" value="{{token}}">
     </div>
     <div>
@@ -150,18 +168,20 @@ form input[type="text"]:focus {
       <label for="correo">Correo</label>
       <input type="text" name="correo" id="correo" value="{{correo}}" {{readonly}}/>
     </div>
+
     <div>
       <label for="estado">Estado</label>
-         {{ifnot readonly}} 
-         <select name="estado" id="estado">
-          <option value="ACT" {{selectedACT}} >Activo</option>
-          <option value="INA" {{selectedINA}}>Inactivo</option>
-         </select>
-         {{endifnot readonly}} 
-        {{if readonly}} 
+      {{ifnot readonly}} 
+      <select name="estado" id="estado">
+        <option value="ACT" {{selectedACT}}>Activo</option>
+        <option value="INA" {{selectedINA}}>Inactivo</option>
+      </select>
+      {{endifnot readonly}} 
+      {{if readonly}} 
       <input type="text" name="estado" id="estado" value="{{estado}}" {{readonly}}/>
       {{endif readonly}} 
     </div>
+
     <div>
       <label for="evaluacion">Evaluación</label>
       <input type="text" name="evaluacion" id="evaluacion" value="{{evaluacion}}" {{readonly}}/>
@@ -169,8 +189,7 @@ form input[type="text"]:focus {
 
     <div class="actions">
       <button id="btnCancelar">Cancelar</button>
-      
-     {{ifnot isDisplay}} 
+      {{ifnot isDisplay}} 
       <button id="btnConfirmar" type="submit">Confirmar</button>
       {{endifnot isDisplay}}
     </div>
