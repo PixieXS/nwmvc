@@ -147,7 +147,7 @@ class Incidente extends PublicController
         $this->tipo_incidente = $_POST["tipo_incidente"] ?? '';
         $this->descripcion  = $_POST["descripcion"] ?? '';
         $this->accion_tomada = ($_POST["accion_tomada"] ?? '');
-        $this->estado  = $_POST["estado"] ?? 'Abierto';
+        $this->estado  = $_POST["estado"] ?? '';
 
         // Validaciones básicas
         if(Validators::IsEmpty($this->estudiante_nombre)) {
@@ -200,7 +200,9 @@ class Incidente extends PublicController
 
         $viewData["isDisplay"] = $this->mode === "DSP";
 
-        $viewData["selected"][$this->estado] = "selected";
+        $viewData["selectedAbierto"] = $this->estado === "Abierto" ? "selected" : "";
+        $viewData["selectedCerrado"] = $this->estado === "Cerrado" ? "selected" : "";
+
         
         
         return $viewData;
