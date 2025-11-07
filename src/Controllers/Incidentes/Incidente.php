@@ -149,9 +149,22 @@ class Incidente extends PublicController
         $this->accion_tomada = ($_POST["accion_tomada"] ?? '');
         $this->estado  = $_POST["estado"] ?? '';
 
-        // Validaciones básicas
         if(Validators::IsEmpty($this->estudiante_nombre)) {
             $errors[] = "Nombre no puede ir vacío";
+        }
+
+        if(Validators::IsEmpty($this->tipo_incidente)) {
+            $errors[] = "Tipo De Incidente no puede ir vacío";
+        }
+
+        if(Validators::IsEmpty($this->accion_tomada)) {
+            $errors[] = "Accion Tomada no puede ir vacío";
+        }
+
+        if(!Validators::IsDate($this->fecha_incidente)) {
+            $errors[] = "La fecha del incidente no es valida";
+        } elseif (strtotime($this->fecha_incidente) > time()) {
+            $errors[] = "La fecha del incidente no puede ser futura";
         }
 
         if(!in_array($this->estado, ["Abierto", "Cerrado"])) {
