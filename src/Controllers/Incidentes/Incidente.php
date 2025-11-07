@@ -161,12 +161,6 @@ class Incidente extends PublicController
             $errors[] = "Accion Tomada no puede ir vacío";
         }
 
-        if(!Validators::IsDate($this->fecha_incidente)) {
-            $errors[] = "La fecha del incidente no es valida";
-        } elseif (strtotime($this->fecha_incidente) > time()) {
-            $errors[] = "La fecha del incidente no puede ser futura";
-        }
-
         if(!in_array($this->estado, ["Abierto", "Cerrado"])) {
             $errors[] = "Estado incorrecto";
         }
